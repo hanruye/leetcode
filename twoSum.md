@@ -4,11 +4,13 @@
 
 #include <stdlib.h>
 
+#define SIZE 2
+
 int* twoSum(int* nums, int numsSize, int target) {
     int i,j;
     int count = 0;
     
-    int* ptd = (int *)malloc(2*sizeof(int));//分配动态内存
+    int* ptd = (int *)malloc(SIZE*sizeof(int));//分配动态内存
     if(ptd == NULL)//内存空间分配出错，退出
     {
         exit(EXIT_FAILURE);
