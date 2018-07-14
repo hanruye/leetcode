@@ -1,8 +1,7 @@
 ### 问题描述：
-> 给定整数数组及特定整数a,从数组元素中找出两个整数b、c，若b+c=a,返回元素b、c下标```c
-/**
- * Note: The returned array must be malloced, assume caller calls free().
- */
+> 给定整数数组及特定整数a,从数组元素中找出两个整数b、c，若b+c=a,返回元素b、c下标
+```c
+
 #include <stdlib.h>
 
 int* twoSum(int* nums, int numsSize, int target) {
