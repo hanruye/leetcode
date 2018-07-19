@@ -1,0 +1,56 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+%使用宏包
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}%插图
+\usepackage{amsmath}%数学公式
+\usepackage{amssymb}%数学字体与符号
+\usepackage{url}
+\usepackage{cite}
+\usepackage[colorlinks,linkcolor=black,anchorcolor=black,citecolor=black,CJKbookmarks=True]{hyperref}
+\cvprfinalcopy % *** Uncomment this line for the final submission
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+\begin{document}
+
+%%%%%%%%% TITLE
+\title{Supervised Kernel Descriptors for Visual Recognition}
+
+\author{Ruyue Han\\\\July 19,2018}
+
+\maketitle
+
+
+%%%%%%%%% ABSTRACT
+\begin{abstract}
+   In visual recognition tasks,designing low level image features representation is fundamental work.The advent of local patch features from pixel attributes such as SIFT and LBP, has dramatic progressed.Recently,kernel descriptors(KDES)~\cite{Kernel2010bibtex},a kernel view of these feature ,generalizes the feature design in an unsupervised way and yields impressive results.
+\par In this paper, author give a supervised framework to embed the image level label information into the design of patch level kernel descriptors, which author call supervised kernel descriptors (SKDES).Specifically, researchers use the 
+bag-of-words (BOW) image classification pipeline and a large margin criterion to learn the lowlevel patch representation, which makes the patch features much more compact and achieve better discriminative ability than KDES. With that method, researchers achieve competitive results over several public datasets comparing with state-of-the-art methods.
+   
+\end{abstract}
+
+%%%%%%%%% BODY TEXT
+\section{Introduction}
+
+For many visual recognition tasks, one critical problem is to discover robust image representations.The feature design is very challenging,because,on the one hand, image features should be invariant to the inner-class variation,on the other hand,image features also need to be discriminative regarding the inter-class differences for separating confusing classes.
+\par To handle these challenges, current state-of-the-art
+image classification algorithms use the bag-of-words pipeline,which firstly extracts low-level patch based descriptors, then encodes them into a middle level representation through an over-complete dictionary, and finally obtains image features by a spatial pooling strategy~\cite{LBo2009kernel,jfeng2009Geometric,Gao2010features,
+Lazebnik2006features,Yang2009LInear}.
+\par Nevertheless, most work keeps the low level descriptors as hand-crafted features, such as HOG~\cite{Dalal2004Histograms} or SIFT~\cite{Gao2010features}.
+Aselaborated by~\cite{Mikolajczyk2005evaluation,Tamrakar2012Evaluation}, the selection of raw descriptors is
+also an essential factor for achieving good performance in
+recognition tasks as the error at the beginning may propagate to latter stages. 
+In author's work, they focus on learning
+discriminative patch descriptors by exploiting image label
+information for improving racognition accuracy.
+
+
+{\small
+\bibliographystyle{ieee}%引用模式
+\bibliography{1}
+}
+
+\end{document}
