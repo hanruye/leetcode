@@ -21,3 +21,6 @@ class Solution:
                     nums[i] = nums[i] ^ nums[index]
         return index+1
 ```
+###  总结：
+***
+1. 思路：循环列表元素与给定数字对比，若不相等,将该元素放与数组index+1位的元素对换。
