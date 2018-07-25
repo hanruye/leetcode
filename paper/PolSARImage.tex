@@ -1,0 +1,144 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfigure}
+
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+\cvprfinalcopy
+
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+\ifcvprfinal\pagestyle{empty}\fi
+
+\begin{document}
+\title{Polarimetric Convolutional Network for PolSAR
+Image Classification}
+
+\author{Ruyue Han\\\\July 24,2018}
+
+\maketitle
+%\thispagestyle{empty}
+
+%%%%%%%%% ABSTRACT
+\begin{abstract}
+   Generally,the approaches for analyzing the polarimetric scattering matrix of polarimetric synthetic aperture radar (PolSAR) data have always been the focus of PolSAR image classification.And polarimetric scattering matrix only show a limited number of polarimetric information.In order to solve these problems,author's team give a new coding way and a corresponding classification algorithm based on convolution network.By performing the experiments on the PolSAR images acquired by AIRSAR and RADARSAT-2,they proved their measures have better results and have huge potential for PolSAR data.Source code for new coding is available at \nolinkurl{https://github.com/liuxuvip/Polarimetric-Scattering-Coding}.
+   
+   
+   Index Terms--Classification, PolSAR, polarimetric scattering matrix, sparse scattering matrix, convolution network.
+
+\end{abstract}
+\section{Introduction}
+	PolSAR images have been widely used in urban planning, agriculture assessment and environment monitoring~\cite{Comparison2017_1}~\cite{Observations2016_2}.And These applications require the fully understanding and interpretation of PolSAR images.PolSAR images include land,buildings, water, sand, urban areas, vegetation, road, bridge and so on. Different objects have different features, which is the basis of classification.In order to distinguish them from image, the features of the pixels should be fully extracted and mined.
+	
+	
+	With the development of the PolSAR image classification,many feature extraction techniques have been introduced.There are mainly two kinds:coherent target decomposition and incoherent target decomposition.
+	
+	
+	For classification tasks, besides the feature extraction, classifier design is also a key point. And the classification methods can be broadly divided into three groups: unsupervised classification, semi-supervised classification and supervised classification~\cite{Semisupervised2016_3}.
+	
+	
+	Recently,Deep learning has been introduced into the geoscience and remote sensing (RS) community~\cite{Pol-sar2016_4,synthetic2016_5,Spectralspatial2016_6}.
+Especially in the direction of PolSAR image classification,for instance,there is a
+specific deep model for PolSAR image classification named as Wishart deep.Then a single-hidden-layer neural network based on the fast Wishart distance is defined for PolSAR image.full convolutional network (FCN) is successfully used for natural image semantic segmentation ~\cite{convolutional2017_7,Semantic2016_8} and remote sense image classification based on one by one pixel~\cite{Surface2017_9,Automatic2017_10}.
+
+
+Based on the above research works,author's team proposed a supervised PolSAR image classification method based on polarimetric sparse scattering coding and convolution network to solve the problems of PolSAR data coding, feature extraction, and land use classification.
+
+\section{Proposed Method}	
+	The new coding way , sparse scattering coding proposed by author,directly express the PolSAR  data that is a two-dimensional complex matrix.And next feeding the scattering matrix obtained by the encoding into a classifier based on fully convolutional network.
+\subsection{Representation of PolSAR images}
+Every pixel in PolSAR image can be represented by  a 2 × 2 complex scattering matrix S.
+\begin{equation}
+S = \begin{bmatrix}
+S_{HH} & S_{HV}\\S_{VH} & S_{VV}
+\end{bmatrix} = \begin{bmatrix}
+|S_{HH}|e^{\phi HH} & |S_{HV}|e^{\phi HV} \\ |S_{VH}|e^{\phi VH} & |S_{VV}|e^{\phi VV}
+\end{bmatrix}
+\end{equation}
+so we can get the lexicographic scattering vector $\vec{k}_{L}$ and Pauli scattering vector $\vec{k}_{P}$ , defined as
+\begin{align}
+\vec{k}_{L} &=  \begin{bmatrix}
+S_{HH} , \sqrt{2}S_{HV},S_{VV}
+\end{bmatrix}^{T} \\
+\vec{k}_{P} &= \frac{1}{\sqrt{2}}\begin{bmatrix}
+S_{HH} + S_{VV},S_{HH} - S_{VV},2S_{HV}
+\end{bmatrix}
+\end{align}
+And then we get average value:covariance matrix C ~\cite{Polarimetric2009_10} and coherence matrix T
+\begin{align}
+~{C} = <\vec{k}_{L}\vec{k}_{L}^{H}>\\
+~{T} = <\vec{k}_{P}\vec{k}_{P}^{H}>
+\end{align}
+\subsection{Sparse scattering coding}
+	Inspired by the one hot coding ~\cite{Digital2010_11} and hash coding ~\cite{massive2014_12},author's team give the sparse scattering coding for complex matrix encoding.The coding function is as follows:
+\begin{equation}
+\begin{aligned}
+\varphi(S) &= \varphi \begin{pmatrix}
+\begin{bmatrix}
+S_{HH} & S_{HV}\\S_{VH} & S_{VV}
+\end{bmatrix}
+\end{pmatrix} \\&= \varphi \begin{pmatrix}
+\begin{bmatrix}
+a+bi & c+di \\ e+fi & g+hi
+\end{bmatrix}
+\end{pmatrix} \\ &= \begin{bmatrix}
+a & b & 0 & 0\\0 & 0 & |c| & |d|\\e & 0 & 0 & h\\0 & |f | & |g| & 0
+\end{bmatrix}
+\end{aligned}
+\end{equation}
+Based on this new coding way,they get a 2-D sparse matrix instead of  a 1-D vector. We can see the difference from Fig.~\ref{fig:activefunction}
+\begin{figure}[htb]
+\centering
+\includegraphics[width=3.50in,height=1.50in]{paper1-1.PNG}
+\caption{The difference of traditional feature extraction and sparse scattering
+coding for one pixel in the PolSAR image.}
+\label{fig:activefunction}
+\end{figure}
+
+\subsection{Polarimetric convolutional network}
+In this paper, author proposed a polarimetric convolutional network for polarimetric SAR data classification, as is shown in Fig. ~\ref{fig:polarimetric}.
+\begin{figure}[htb]
+\centering
+\includegraphics[width=3.50in,height=2.30in]{paper1-2.PNG}
+\caption{The flowchart of polarimetric convolutional network. There are 8 channels in the original input data I, which contains four modes, and each has real
+and imaginary parts. For a pixel, eight channel elements can be represented by a-b in Formula. 1, and the input data I is encoded into a complex value matrix
+S I , called polarimetric scattering matrix. By sparse scattering coding, sparse scattering matrix S Ir can been obtained. The feature map S Ir2 is generated
+from the two layer convolutional networks. S I and S Ir2 are fed into two fully convolutional networks to get sparse scattering feature and echo feature,
+respectively. Finally, two kinds of feature from the two networks are aggregated to get the classification results.}
+\label{fig:polarimetric}
+\end{figure}
+
+\section{Experiments and Result}
+	In this section, four PolSAR images are described in detail,which are used to verify the performance of the proposed algorithm. The four images have significant representativeness, obtaining from two airborne systems and two cities. The parameter settings of the proposed method are discussed.
+	
+	From the experimental details,I can see the results show that the proposed algorithm PCN is robust and get a better results, the classification maps of the proposed method are very close to the ground truth maps, and the
+classification accuracies are higher than contrast algorithms.
+
+
+
+%\begin{figure}
+%\centering
+%\subfigure[SubfigureCaption]{
+%\label{Fig.sub.1}
+%\includegraphics[width=3.50in,height=2.80in]{code1anwser.eps}}
+%\subfigure[SubfigureCaption]{
+%\label{Fig.sub.2}
+%\includegraphics[width=3.50in,height=2.80in]{code1anwser.eps}}
+%\caption{MainfigureCaption}
+%\label{Fig.lable}
+%\end{figure}
+
+
+{\small
+\bibliographystyle{IEEEtran}
+\bibliography{PolSAR}
+}
+
+\end{document}
