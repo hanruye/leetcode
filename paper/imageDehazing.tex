@@ -1,0 +1,134 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfigure}
+\usepackage{float}
+
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+\cvprfinalcopy
+
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+\ifcvprfinal\pagestyle{empty}\fi
+
+\begin{document}
+\title{High-Resolution Image Dehazing with respect to Training Losses and Receptive Field Sizes}
+
+\author{Ruyue Han\\\\ \today}
+
+\maketitle
+%\thispagestyle{empty}
+
+%%%%%%%%% ABSTRACT
+\begin{abstract}
+Haze removal is one of the essential image enhancement processes.According to the types of image region characteristics, we can quickly resolve hazing problems.However, in conventional training work,small-size training images could not provide spatial information to the training networks,especially when these pictures are very samll compared with origion high-resolution images. So author gives a new methure to solve this problem.Using a conditional generative adversarial network (CGAN),and because author's purpose is image dehazing,so they gives it another name -- DeHazing GAN (DHGAN). And DHGAN can capture more global features of the haziness in the training image patches, thus leading to improved dehazing performance.And DHGAN ranked in the second place for the NTIRE2018 Image
+Dehazing Challenge Track2: Outdoor.
+
+\end{abstract}
+\section{Introduction}
+In many cases, image enhancement is required as a preprocessing. One of these challenging tasks is a haze removal.Because the purpose of image dazing is to remain the geometry of image and remove the dazing infromation,so it is like an image-to-image translation.Recently, deep learning-based methods have succeeded
+for image-to-image translations ~\cite{Image2017_1,Photographic2017_2}.
+GANs were first introduced to generate a new image from a noise and have proved to be beneficial in transforming the input images to the new images in their target domain ~\cite{conditional2017_3,Single2013_4}.
+
+
+
+%\begin{figure}[htb]
+%\centering
+%\includegraphics[width=3.50in,height=1.50in]{4-1.PNG}
+%\caption{Super-resolution results produced by our system on real-world low-
+%resolution faces from Widerface ~\cite{Wider2016_1}. Our method is compared %against SRGAN ~\cite{Photo2017_2} and CycleGan ~\cite{Unpaired2017_3}.}
+%\label{fig:resolution}
+%\end{figure}
+
+\section{Related works}
+Single image haze removal has many challenging.The depth information, the distance between a camera and the subjects,
+is directly related to the haze thickness by its nature. Hence,many previous works have studied the formula related to the depth or transmission information to get haze-free images from hazy images ~\cite{Single2011_5,semi2010_6,Single2013_7,Efficient2013_8}.
+Recently, GANs are proposed to resolve image
+generation tasks ~\cite{Unsupervised2017_9,Unpaired2017_10}.
+
+\section{proposed method}
+	Author give a haze removal network that adopts a CGAN,and they call it DHGAN, which is based on the pix2pix network ~\cite{Image2017_11} that was applied to image-to-image translation.
+\subsection{Adjusting image scales}
+Seeing only narrow part of an image is not sufficient to learn enough spatial information which is important for image dehazing.So for improving restoration performance, they use the way of Increasing training patch sizes anddown-scaling the input enlarge the effective receptive fields.
+\subsection{Loss functions}
+The loss function of general GANs can express as follows:
+\begin{small}
+\begin{align}
+L_{D\!Avg} \!&=\! E_{n\!,\!h\!,\!w}\begin{bmatrix}
+\!-\!\log(1\!-\!D_{nhw}(G(x)\!,\!x))\!-\!\log(D_{nhw}(y\!,\!x))
+\end{bmatrix}\\
+L_{G\!Avg}\!&=\! E_{n,h,w}\begin{bmatrix}
+\!-\!\log(D_{nhw}(G(x),x))
+\end{bmatrix}
+\end{align}
+\end{small}\par
+Based on the human’s perception characteristic with a focus of attention on the worst degraded regions in quality assessment,author proposed a new
+loss function by modifying (1) and (2) as follows:
+\begin{small}
+\begin{equation}
+\begin{aligned}
+L_{DMax}&=E_{n}\begin{bmatrix}
+max_{h,w}\begin{bmatrix}
+-\log(1-D_{nhw}(G(x),x))
+\end{bmatrix}
+\end{bmatrix}\\&+E_{n}\begin{bmatrix}
+max_{h,w}\begin{bmatrix}
+-\log(D_{nhw}(y,x))
+\end{bmatrix}
+\end{bmatrix}
+\end{aligned}
+\end{equation}
+\begin{equation}
+\begin{aligned}
+L_{GMax}&=E_{n}\begin{bmatrix}
+max_{h,w}\begin{bmatrix}
+-\log(D_{nhw}(G(x),x))
+\end{bmatrix}
+\end{bmatrix}
+\end{aligned}
+\end{equation}
+\end{small}\par
+Figure~\ref{Fig.lable11} shows the learning curves for the average
+adversarial loss and the max adversarial loss.From Fig~\ref{Fig.sub.1},we can see the generator is overwhelmed by the discriminator,while in the Fig~\ref{Fig.sub.2},the discriminator and the generator are well balanced during the training.
+\begin{figure*}
+\centering
+\subfigure[average adversarial loss]{
+\label{Fig.sub.1}
+\includegraphics[width=3.00in,height=2.20in]{5-1.PNG}}
+\subfigure[proposed max adversarial loss]{
+\label{Fig.sub.2}
+\includegraphics[width=3.00in,height=2.20in]{5-2.PNG}}
+\caption{Average adversarial loss versus max adversarial
+loss during the training}
+\label{Fig.lable11}
+\end{figure*}
+
+
+
+\section{Experiment results}
+Author prove their new method is better than other privious dehazing methods by giving many datas which I haven't figure out.Figure~\ref{Fig:longpicture} shows some examples of input synthetic hazy images, dehazed images by DHGAN, and ground truth images of HSTS. In Figure ~\ref{Fig:longpicture}, the haze of the scenes were removed successfully in the generated images by DHGAN (middle row). There is even more haze in the real photo (bottom row) than dehazed one in the first and second examples.and we can directely see the dehazing result.
+
+\begin{figure*}[htp]
+\centering
+\includegraphics[width=7.00in,height=3.50in]{5-5-1.PNG}
+\caption{Some examples of (top row) input synthetic hazy images, (middle row) dehazed images by DHGAN and (bottom row) ground truth images of HSTS}
+\label{Fig:longpicture}
+\end{figure*}
+
+\section{Conclusion}
+In this paper, author proposed a CGAN-based high-resolution image dehazing network, where it can capture more global features of the haziness in the training image patches by using scale-reduced training input images. This leads to improved dehazing performance. They also proposed a max adversarial loss to train DHGAN, which picks up the maximum values of adversarial losses among
+the multiple outputs.And they say their DHGAN was ranked in the second place for the NTIRE2018 Image Dehazing Challenge Track2: Outdoor.
+
+{\small
+\bibliographystyle{ieee}
+\bibliography{imageDehazing}
+}
+
+\end{document}
