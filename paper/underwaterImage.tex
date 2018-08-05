@@ -1,0 +1,86 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfigure}
+\usepackage{float}
+
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+\cvprfinalcopy
+
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+\ifcvprfinal\pagestyle{empty}\fi
+
+\begin{document}
+\title{Locally Adaptive Color Correction for Underwater Image Dehazing and
+Matching}
+
+\author{Ruyue Han\\\\ \today}
+
+\maketitle
+%\thispagestyle{empty}
+
+%%%%%%%%% ABSTRACT
+\begin{abstract}
+To resolve the issue that there is no application to variable color casts in underwater scenarios,author gives an original fusion-based strategy,which is a function of the light attenuation level estimated from the red channel.And only prior work called the Dark Channel Prior(DCP)~\cite{Single2009_1} is used to restore the color compensated image,as for outdoor dehazing.Author think their technique enhances image contrast in a quite effective manner and also supports accurate transmission map estimation.
+\end{abstract}
+\section{Introduction}
+In underwater the light propagation is distorted due to the absorption and scattering.These distortions result in scenes with foggy appearance and poor contrast.Moreover, the colors are faded because their composing wavelengths are cut differently according to the water depth.All these reasions enhance the visibility in underwater is a challenging task.And all present works have no good results for underwater images.In this paper author introduce an original color correction strategy as a pre-processing step to improve the conventional restoration method derived from the DCP ~\cite{Single2009_1}.Their color correction builds on color transfer,which is a technique of choice to
+counterbalance color casts.From the Fig.~\ref{fig:figure1}, we can see the results    reducing by author's method and the other method.
+
+
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=3.50in,height=3.50in]{6-1.PNG}
+\caption{No valid matches are obtained when applying the original SIFT
+matching procedure [25] on the original pair of underwater images (top
+row). In contrast, applying the same matching procedure on the images de-
+hazed by UDCP [20] (mid row) and by our technique (bottom row) results
+in 30 and 135 correct matches, respectively.}
+\label{fig:figure1}
+\end{figure}
+
+\section{Underwater Light Propagation}
+The comprehensive studies of McGlamery ~\cite{computer1979_2} and
+Jaffe ~\cite{Computer1990_3} have shown that the total irradiance incident on
+a generic point of the image plane has three main compo-
+nents in underwater mediums:direct component, forward
+scattering and back scattering.
+the simplified underwater optical model is as follows:
+\begin{equation}
+I(x) = J(x)e^{-\eta d(x)}+B_{∞}(x)(1-e^{-\eta d(x)})
+\end{equation}
+This simplified underwater camera model (1) has a simi-
+lar form than the model of Koschmieder ~\cite{Theorie1924_4}, used to char-
+acterize the propagation of light in the atmosphere.
+
+%\begin{figure*}
+%\centering
+%\subfigure[average adversarial loss]{
+%\label{Fig.sub.1}
+%\includegraphics[width=3.00in,height=2.20in]{5-1.PNG}}
+%\subfigure[proposed max adversarial loss]{
+%\label{Fig.sub.2}
+%\includegraphics[width=3.00in,height=2.20in]{5-2.PNG}}
+%\caption{Average adversarial loss versus max adversarial
+%loss during the training}
+%\label{Fig.lable11}
+%\end{figure*}
+
+
+
+
+{\small
+\bibliographystyle{ieee}
+\bibliography{underwaterImage}
+}
+
+\end{document}
