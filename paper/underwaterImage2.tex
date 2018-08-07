@@ -1,0 +1,107 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfigure}
+\usepackage{float}
+
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+\cvprfinalcopy
+
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+\ifcvprfinal\pagestyle{empty}\fi
+
+\begin{document}
+\title{Locally Adaptive Color Correction for Underwater Image Dehazing and
+Matching}
+
+\author{Ruyue Han\\\\ \today}
+
+\maketitle
+%\thispagestyle{empty}
+
+%%%%%%%%% ABSTRACT
+
+
+
+\section{Underwater Light Propagation}
+A generic point of the image plane has three main components in underwater mediums: direct component, forward scattering and back scattering.\par
+The direct component is the light reflected directly by the target object onto the image plane,i think that is most important part. At each image coordinate vector x, the direct component is expressed as:
+\begin{equation}
+E_{D}(x) = J(x)e^{-\eta d(x)} = J(x)t(x)
+\end{equation}
+Author think using same attenuation coefficient independently of different light channel is the source of poor enhanced quality.So for dealing this issue,their work builds on color transfer.\par
+Back-scattering,the main source of contrast loss and color shifting in underwater images, is often expressed as:
+\begin{equation}
+E_{BS}(x) = E_{∞}(x)(1-e^{-\eta d(x)})
+\end{equation}\par
+Forward scattering mainly cause image blurring but with little color artifact,so autor doesn't think about it in formula.
+The simplified underwater optical model is as follows:
+\begin{equation}
+I(x) = J(x)e^{-\eta d(x)}+B_{∞}(x)(1-e^{-\eta d(x)})
+\end{equation}
+
+\section{Underwater Color Correction}
+In underwater, the color correction should ideally depend on the light attenuation level. However, conventional color correction methods rely on global (and not local) image statistics, and are thus missing the capability to tune/adjust
+the color adjustment locally. To circumvent this limitation,author proposes to adopt a fusion-based approach to adapt the color correction locally,as depicted in Fig. ~\ref{fig:figure1}.\par
+\begin{figure}[htb]
+\centering
+\includegraphics[width=3.50in,height=1.30in]{6-3.PNG}
+\caption{Overview of our locally adaptive color correction technique.
+Input Image Gray World MaxRGB Ancuti et al. The fusion process blends two inputs according to the local attenuation level. In our experiments, the attenuation weight map A(x) is estimated based on the red channel intensity. The two inputs correspond to the initial image (bottom path), and to an image in which the colors of strongly attenuated regions have been properly corrected (top path, see the text fordetails).}
+\label{fig:figure1}
+\end{figure}
+In their experiments, the attenuation map A(x) is simply estimated based on the red channel information as:
+\begin{equation}
+A(x) = 1-I^{r}(x)^{\gamma}
+\end{equation}
+The first input is the initial input image,which named I(x) in Fig.~\ref{fig:figure1}.The second input is the image that include the correct colors in regions that are significantly attenuated in the initial image.The second input image is reducing by color tranfer,the formula is as follows:
+\begin{equation}
+I^{'}(x) = A(x)I(x) + \begin{bmatrix}
+1-A(x)
+\end{bmatrix}\bar{I}
+\end{equation}
+where $\bar{I}$ is the mean value of the input image.From the Fig.~\ref{fig:figure2},we can see the results anthor gives.
+\begin{figure}[htb]
+\centering
+\includegraphics[width=3.50in,height=3.00in]{6-4.PNG}
+\caption{Adapting our input image based on the different levels of attenuation.}
+\label{fig:figure2}
+\end{figure}
+
+The Reihard et al ~\cite{transfer2001_1} color transfer method to generate the color transferred image $I_{CT}(x)$,used as a second fusion input.So the final color corrected image $I_{CC}(x)$ is generated.\par
+\begin{equation}
+I_{CC}(x) = A(x)I^{'}_{CT}(x) + \begin{bmatrix}
+1-A(x)
+\end{bmatrix}I(x)
+\end{equation}
+
+%\begin{figure*}
+%\centering
+%\subfigure[average adversarial loss]{
+%\label{Fig.sub.1}
+%\includegraphics[width=3.00in,height=2.20in]{5-1.PNG}}
+%\subfigure[proposed max adversarial loss]{
+%\label{Fig.sub.2}
+%\includegraphics[width=3.00in,height=2.20in]{5-2.PNG}}
+%\caption{Average adversarial loss versus max adversarial
+%loss during the training}
+%\label{Fig.lable11}
+%\end{figure*}
+
+
+
+
+{\small
+\bibliographystyle{ieee}
+\bibliography{underwaterImage}
+}
+
+\end{document}
