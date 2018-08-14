@@ -1,0 +1,84 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfigure}
+
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+\cvprfinalcopy
+
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+\ifcvprfinal\pagestyle{empty}\fi
+
+\begin{document}
+\title{Single Image Haze Removal Using Dark Channel Prior}
+
+\author{Ruyue Han\\\\ \today}
+
+\maketitle
+%\thispagestyle{empty}
+
+%%%%%%%%% ABSTRACT
+\begin{abstract}
+   In this paper, author proposed dark channel prior to remove haze from a single input image.The dark channel prior is a kind of statistics of outdoor haze-free images. It is based on a key observation--most local patches in outdoor haze-free images contain some pixels whose intensity is very low in at least one color channel. Using this prior with the haze imaging model, we can directly estimate the thickness of the haze and recover a high-quality haze-free image. Results on a variety of hazy images demonstrate the power of the proposed prior.
+\end{abstract}
+\section{Introduction}
+Images of outdoor scenes are usually degraded by the turbid medium in the atmosphere.The irradiance received by the camera from the scene point is attenuated along the line of sight.Furthermore, the incoming light is blended with the airlight ~\cite{Theorie1924_1}.The degraded images lose contrast and color fidelity, as shown in Fig. ~\ref{fig:firstpicture}(a).Many methods have been proposed by using multiple images or additional information,like Polarization-based methods ~\cite{Dehazing2001_2}, ~\cite{Blind2006_3}.Recently, single image haze removal has made significant progresses ~\cite{Single2008_4}, ~\cite{Visibility2008_5}.But author think these work depende on stronger priors or assumptions.So author give a new meatherd named dark channel prior.This work based on the statistics of outdoor haze-free images.Author find that in most of the local regions which do not cover the sky, some pixels (called dark pixels) very often have very low intensity in at least one color (RGB) channel. In hazy images,
+the intensity of these dark pixels in that channel is mainly contributed by the airlight. Therefore, these dark pixels can directly provide an accurate estimation of the haze transmission.But this meathured has it's own disadvantages,it can't work very well when the scene object is inherently similar to the airlight,means when the picture is close to white.
+\begin{figure}[htb]
+\centering
+\includegraphics[width=3.50in,height=1.50in]{7-1.PNG}
+\caption{Haze removal using a single image. (a) Input hazy image. (b) Image after haze removal by our approach. (c) Our recovered depth map.}
+\label{fig:firstpicture}
+\end{figure}
+\section{Background}	
+	The model widely used to describe the formation of a hazy image in computer vision is as follows:
+\begin{equation}
+\textbf{I}(x) = \textbf{J}(x)t(x)+\textbf{A}(1-t(x)) \label{eq:eqution1}
+\end{equation}
+where \textbf{I} is the observed intensity,which we can see from camera image,  \textbf{J} is the scene radiance that is the real picture when there is no haze,\textbf{A} is the global atmospheric light, and t is the medium transmission.The gogal of haze remove is to recover \textbf{J} , \textbf{A} and t from \textbf{I}.\par 
+In Eq~\ref{eq:eqution1},the first term $\textbf{J}(x)t(x)$ is called direct attenuation ~\cite{Visibility2008_5}, the second term $\textbf{A}(1-t(x))$ is called airlight ~\cite{Theorie1924_1},~\cite{Visibility2008_5}.The direct attenuation describes the scene radiance and its decay in the medium,and the airlight results from previously scattered light and leads to the shift of the scene colors.\par
+When the atmosphere is homogenous, the transmission t can be expressed as
+\begin{equation}
+t(x) = e^{-\beta d(x)}
+\end{equation}
+This equation indicates that the scene radiance is attenuated exponentially with the depth.\par
+Geometrically, the haze imaging equation ~\ref{eq:eqution1} means that in RGB color space, the vectors \textbf{A}, \textbf{I}, and \textbf{J} are coplanar and their end points are collinear (see Fig. ~\ref{fig:secondpicture}(a)). The transmission t is the ratio of two line segments:
+\begin{equation}
+t(x) = \frac{\Arrowvert \textbf{A} - \textbf{I}(x) \Arrowvert}{\Arrowvert
+ \textbf{A} - \textbf{J}(x) \Arrowvert} = \frac{A^{c}-I^{c}(x)}{A^{c} - J^{c}(x)}
+\end{equation}
+where c $\in$ \{r,g,b\} is the color channel index.
+\begin{figure}[htb]
+\centering
+\includegraphics[width=3.50in,height=1.50in]{7-2.PNG}
+\caption{(a) Haze imaging model. (b) Constant albedo model used in
+Fattal’s work ~\cite{Single2008_4}.}
+\label{fig:secondpicture}
+\end{figure}
+%\begin{figure}
+%\centering
+%\subfigure[SubfigureCaption]{
+%\label{Fig.sub.1}
+%\includegraphics[width=3.50in,height=2.80in]{code1anwser.eps}}
+%\subfigure[SubfigureCaption]{
+%\label{Fig.sub.2}
+%\includegraphics[width=3.50in,height=2.80in]{code1anwser.eps}}
+%\caption{MainfigureCaption}
+%\label{Fig.lable}
+%\end{figure}
+
+
+{\small
+\bibliographystyle{ieee}
+\bibliography{DarkChannelPrior}
+}
+
+\end{document}
