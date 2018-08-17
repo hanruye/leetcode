@@ -1,0 +1,107 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfigure}
+
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+\cvprfinalcopy
+
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+\ifcvprfinal\pagestyle{empty}\fi
+
+\begin{document}
+\title{Single Image Haze Removal Using Dark Channel Prior}
+
+\author{Ruyue Han\\\\ \today}
+
+\maketitle
+%\thispagestyle{empty}
+
+\section{Dark Channel Prior}
+Based on a conclusion that in most of nonsky patches of image without haze, at least one color channel has some pixels whose intensity are very low and close to zero, author proposed dark channel prior technique.The model is as follows:
+\begin{equation}
+J^{dark}(\textbf{x}) = \min_{y \in{\Omega (x)}}\left(\min_{c\in{\{r,g,b\}}}J^{c}\left(\textbf{y}\right) \right)
+\end{equation}
+where $J^{c}$ is a color channel of \textbf{J} and $\Omega (x)$ is a local patch
+centered at x.We can get a dark channel by two steps:1.Finding the lowest value from r,g,b channels of each pixel(Fig.\ref{fig:firstpicture} (b)) and creating a new 2D image, whose size is same as original picture,2.Using minimum filter to find minnum from a region of a certain size(Fig.\ref{fig:firstpicture} (c)).\par
+\begin{figure*}[htb]
+\centering
+\includegraphics[width=7.00in,height=1.80in]{7-3.png}
+\caption{Calculation of a dark channel. (a) An arbitrary image J. (b) For each pixel, we calculate the minimum of its (r, g, b) values. (c) A minimum filter
+is performed on (b). This is the dark channel of J. The image size is $800\times{551}$, and the patch size of $\Omega$ is $15 \times{15}$}
+\label{fig:firstpicture}
+\end{figure*}
+Using the concept of a dark channel,the dark channel of image \textbf{J} ,that is an outdoor haze-free image, is low and tends to be zero:
+\begin{equation}
+J^{dark} \to 0.
+\end{equation} 
+
+Author gives us some expriments results in Fig.~\ref{fig:secondpicture} and Fig.~\ref{fig:thirdpicture} .Fig.~\ref{fig:secondpicture} shows several outdoor images and corresponding dark channels and Fig.~\ref{fig:thirdpicture} is the intensity histogram over all 5,000 dark channels.Due to the additive airlight, a hazy image is brighter than its haze-free version.So the dark channel of a hazy image will have higher intensity in regions with denser haze (see the right-hand side of Fig. ~\ref{fig:secondpicture}).Using these information author can compute the transmission and the atmospheric ligh.
+\begin{figure*}[htb]
+\centering
+\includegraphics[width=7.00in,height=3.50in]{7-4.png}
+\caption{(a) Example images in our haze-free image database. (b) The corresponding dark channels. (c) A hazy image and its dark channel.}
+\label{fig:secondpicture}
+\end{figure*}
+\begin{figure*}[htb]
+\centering
+\includegraphics[width=7.00in,height=2.00in]{7-5.png}
+\caption{Statistics of the dark channels. (a) Histogram of the intensity of the pixels in all of the 5,000 dark channels (each bin stands for 16 intensity
+levels). (b) Cumulative distribution. (c) Histogram of the average intensity of each dark channel.}
+\label{fig:thirdpicture}
+\end{figure*}
+
+\section{Haze Removal Using Dark Channel Prior}
+\subsection{Estimating the Atmospheric Light}
+In the previous works, the color of the most haze-opaque
+region is used as \textbf{A} ~\cite{Visibility2008_5} or as \textbf{A}'s initial guess ~\cite{Single2008_4}.When the atmospheric light is the only illumination source of the scene,the scene radiance of each color channel is given by
+\begin{equation}
+J(x)=R(x)A
+\end{equation}
+where $R \leq 1$ is the reflectance of the scene points. The haze imaging equation 
+$\textbf{I}(x) = \textbf{J}(x)t(x) + \textbf{A}(1-t(x))$ can be written as \begin{equation}
+I(x)=R(x)At(x)+(1-t(x))A \leq A
+\end{equation}
+When the d is very large ,$t \approx 0$,the brightest is the most haze-opaque and it approximately equals A.But in practice we can rarely ignore the sunlight. So author consider the sunlight as S, and the equation is as follows
+\begin{equation}
+I(x)=R(x)St(x) + R(x)At(x) +(1-t(x))A \label{eq:equation3}
+\end{equation} 
+Based on equation~\ref{eq:equation3},the most brightest pixels may not come from the haze-opaque in image.So work of people who ignore the sunlight is not rubust.  As discussed before,the dark channel of a hazy image approximates the haze denseness,which means the influence of sunlight is weak in dark channel.So using dark channel technique can provide a good approximation of A.
+\subsection{Estimating the Transmission}
+From last section we can get airlight \textbf{A}.First normalizing the haze imaging equation $\textbf{I}(x) = \textbf{J}(x)t(x)+\textbf{A}(1-t(x))$ by A:
+\begin{equation}
+\frac{I^{c}(x)}{A^{c}} = t(x)\frac{J^{c}(x)}{A^{c}} + 1 - t(x),c \in {\{r,g,b\}} \label{eq:equtation4}
+\end{equation}
+Then author assume that the transmission in local patch $\Omega {(x)}$ is constant and denote this transmission as $\widetilde{t}$(x).And then keep going to calculate the dark channel on both sides of~\ref{eq:equtation4}
+\begin{equation}
+\min_{y\in {\Omega (x)}}\!\!\!\left(\min_{c}\frac{I^{c}(y)}{A^{c}} \right) \!\!=\!\! \widetilde{t}(x)\!\min_{\!y\in{\Omega{(x)}}}\!\left(\min_{c}\frac{J^{c}(y)}{A^{c}} \right)\!\!\! +\!1\!-\!\widetilde{t}{(x)}
+\label{eq:equation5}
+\end{equation}
+As \textbf{J} is a haze-free image,the dark channle of J is close to zero due to the dark channel prior:
+\begin{equation}
+J^{dark}(x) = \min_{y\in{\Omega{(x)}}}\left(\min_{c}J^{c}(y)\right) = 0
+\end{equation}
+As $A^{c}$  is positive,so this lead to
+\begin{equation}
+\min_{y\in{\Omega{(x)}}}\left(\min_{c}\frac{J^{c}(y)}{A^{c}} \right) = 0 \label{eq:equation6}
+\end{equation}
+Then putting the Eq.~\ref{eq:equation6} into Eq.~\ref{eq:equation5},we can get the transmission $\widetilde{t}$ 
+\begin{equation}
+\widetilde{t} = 1- \min_{y\in{\Omega{(x)}}}\left(\min_{c}\frac{I^{c}(y)}{A^{c}} \right)
+\end{equation}
+
+
+{\small
+\bibliographystyle{ieee}
+\bibliography{DarkChannelPrior}
+}
+
+\end{document}
