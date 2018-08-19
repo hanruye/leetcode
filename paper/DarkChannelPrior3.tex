@@ -1,0 +1,89 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfigure}
+
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+\cvprfinalcopy
+
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+\ifcvprfinal\pagestyle{empty}\fi
+
+\begin{document}
+\title{Single Image Haze Removal Using Dark Channel Prior}
+
+\author{Ruyue Han\\\\ \today}
+
+\maketitle
+%\thispagestyle{empty}
+
+\section{Haze Removal Using Dark Channel Prior}
+\subsection{Estimating the Transmission}
+Haze imaging equation
+\begin{equation}
+\textbf{I}(x) = \textbf{J}(x)t(x)+\textbf{A}(1-t(x)) \label{eq:eqution1}
+\end{equation}
+As before,in a very small eare,author assume transmission t(x) is constant and denote this as $\widetilde{t}(x)$ 
+\begin{equation}
+\widetilde{t}(x) = 1- \min_{y\in{\Omega{(x)}}}\left(\min_{c}\frac{I^{c}(y)}{A^{c}} \right)
+\label{eq:equation2}
+\end{equation}
+But in the real world, even in clear day,there are haze in atmosphere,so author change the equaiton~\ref{eq:equation2},adding a weight $\omega$(0 $<$ $\omega$ $\leq$ 1) to control the haze
+\begin{equation}
+\widetilde{t}(x) = 1- \omega \min_{y\in{\Omega{(x)}}}\left(\min_{c}\frac{I^{c}(y)}{A^{c}} \right)
+\end{equation}
+Going further to generalize equation ~\ref{eq:eqution1},we can get a new equation
+\begin{equation}
+\textbf{I}(x) = \textbf{J}(x)t_{1}(x)+\textbf{A}(1-t_{2}(x))
+\end{equation}
+From the befor work we can get the transmission $t_{2}(x)=\widetilde{t}(x)$,the only problem is reduced to a multiplicative form $\textbf{J}(x)t_{1}(x)$.And author say there are other way to disentangle this term,but he din't give.Fig
+~\ref{fig:onepicture}(b) shows the estimated transmission maps using equation (\ref{eq:equation2}). Fig.~\ref{fig:onepicture}(d) shows the corresponding recovered images. As we can see,the main problems are some halos and block artifacts. This is because the transmission is not always constant in a patch.For this problem,author propose a soft matting method to refine the transmission maps.
+\begin{figure*}[htb]
+\centering
+\includegraphics[width=6.50in,height=3.20in]{7-6.png}
+\caption{Haze removal. (a) Input hazy images. (b) Estimated transmission maps before soft matting. (c) Refined transmission maps after soft matting.
+(d), (e) Recovered images using (b) and (c), respectively.}
+\label{fig:onepicture}
+\end{figure*}
+
+\subsection{Soft Matting}
+The image matting equation 
+\begin{equation}
+\textbf{I} = \textbf{F}\alpha + \textbf{B}(1-\alpha)
+\label{eq:equation3}
+\end{equation}
+we can notice that the haze imaging equation(\ref{eq:eqution1}) has very similar
+form as equation(\ref{eq:equation3}).A transmission map in the haze imaging equation is exactly an alpha map. So author apply a closed-form framework of
+matting ~\cite{Matting2006_1} to refine the transmission.In the middle work,I don't understand.FInally,author perform a bilateral filter ~\cite{Bilateral1998_2} on t to smooth its small scale textures.Fig.~\ref{fig:onepicture}(c) shows the refined results using Fig.~\ref{fig:onepicture}(d) as the
+constraint.
+\subsection{Recovering the Scene Radiance}
+Now we have figured out A and t(x),so based on equation (\ref{eq:eqution1}),we can comepute J(x),but when t(x) is closed to zero,the J(x) is prone to noise.So author proposed a lower bound $t_{0}$ to restrict the transmission t(x).The final scence radiance J(x) is recovered by
+\begin{equation}
+\textbf{J}(x) = \frac{\textbf{I}(x) - \textbf{A}}{max(t(x),t_{0})} + \textbf{A}
+\end{equation}
+And $t_{0}$ is given 0.1.
+\subsection{Patch Size}
+A key parameter in this algorithm is the patch size in eqation~\ref{eq:equation2}.
+From Fig.~\ref{fig:secondpicture}.The larger the patch size, the darker the dark channel.And if the patch size is to small,the picture you recover will be oversaturated.Biger is good,not too small.
+\begin{figure*}[htb]
+\centering
+\includegraphics[width=6.00in,height=2.00in]{7-7.png}
+\caption{A haze-free image ($600 \times 400$) and its dark channels using $3 \times 3$ and $15 \times 15$ patches, respectively.}
+\label{fig:secondpicture}
+\end{figure*}
+
+
+{\small
+\bibliographystyle{ieee}
+\bibliography{DarkChannelPrior}
+}
+
+\end{document}
