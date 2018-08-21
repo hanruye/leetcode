@@ -1,0 +1,54 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfigure}
+
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+\cvprfinalcopy
+
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+\ifcvprfinal\pagestyle{empty}\fi
+
+\begin{document}
+\title{Deeply Exploit Depth Information for Object Detection}
+
+\author{Ruyue Han\\\\ \today}
+
+\maketitle
+%\thispagestyle{empty}
+
+\begin{abstract}
+This paper addresses the issue on how to more effectively coordinate the depth with RGB aiming at boosting the performance of RGB-D object detection.At the very first, author investigate two ideas under the CNN model: property derivation and property fusion.Firstly,author proposed that the depth can be utilized not only as a type of extra information besides RGB but also to derive more visual properties ,author constructed a two-stage learning framework.Secondly,they explore the fusion method of different properties in feature learning,from which layer the properties should be fused together.The analysis shows that different semantic
+properties should be learned separately and combined before passing into the final classifier.
+\end{abstract}
+
+\section{Introduction}
+Actually, the depth has some profitable attributes for visual analysis, e.g. being invariant to lighting or color variations, and providing geometrical cues for image structures~\cite{Convolutional2012_1}.In this paper, author adopt CNN to extract rich features from the RGB-D images, i.e. author are under the CNN model to investigate the exploitation of the depth information.For the RGB-D object detection with CNN, the key is how to elegantly coordinate the RGB with depth information in feature learning. In the previous literatures, some intuitive methods have been proposed ~\cite{Indoor2013_2, Learning2014_3}.Roughly, previous literatures can be divided into two broad categories according to the strategy the depth is treated.The first one is to straightforwardly add the depth map to CNN as the fourth channel along with the RGB.The second is to process the color and
+depth separately, and they are combined before being fed into the final classifier.Author proposed a novel method to deeply exploit the depth information
+for object detection. Figure. ~\ref{fig:onepicture} illustrates the main ideas of
+author's method.
+Firstly, various visual property maps are derived through analyzing the provided color and depth pairs.It is believed that more properties can contribute to the accurate description of the object and thus help boost the detection performance. Specifically, the derived properties include the contour, height, and angle maps 1 . Secondly, author systematically investigate the method to fuse different visu-
+al properties under the CNN model, i.e. how to represent a property, and from which layer the properties need to be fused together.
+\begin{figure}[htb]
+\centering
+\includegraphics[width=3.50in,height=2.10in]{8-1.png}
+\caption{Illustration of learning rich features for RGB-D object detection. Various property maps are derived to describe the object from different perspectives. The features for these maps are learned independently and then fused for the final classification. Specifically, the derived maps include geometry contour from the color/depth pairs, and horizontal disparity, height above ground,
+angle with gravity from the depth data. These maps, as well as the RGB image, are sent into different CNNs for feature learning. And the features are joint before being fed into the classifier.}
+\label{fig:onepicture}
+\end{figure}
+
+
+{\small
+\bibliographystyle{ieee}
+\bibliography{DepthInfoObjectetection1}
+}
+
+\end{document}
