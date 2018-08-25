@@ -1,0 +1,97 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfigure}
+
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+\cvprfinalcopy
+
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+\ifcvprfinal\pagestyle{empty}\fi
+
+\begin{document}
+\title{Generative Adversarial Nets}
+
+\author{Ruyue Han\\\\ \today}
+
+\maketitle
+%\thispagestyle{empty}
+
+\section{Adversarial nets}
+The adersarial nets include two parts: generator G and discriminator D,they are all neural networks and can be changed following your mind.The purpose of G is to create images ,the D is to identify the source of images.In other words,D and G play the folloing two-player minimax game with value function V(G,D).\par
+\begin{equation}
+\begin{aligned}
+\min_{G}\max_{D} V(G,D) &=  
+\mathbb{E}_{x \backsim p_{data}(x)} \left[\log{D(x)} \right] 
++ \mathbb{E}_{z \backsim p_{z}(z)}\left[\log{1-D(G(z))} \right]\\
+&=\mathbb{E}_{x \backsim p_{data}(x)} \left[\log{D(x)} \right] 
++ \mathbb{E}_{x \backsim p_{g}(x)}\left[\log{1-D(x)} \right]
+\end{aligned}
+\end{equation}
+where $p_{data}(x)$ is the real data's distribution, and $p_{z}(z)$ is the noise's distribution which can be changed, $p_{g}(x)$ is generator’s distribution.\par
+The final purpose is that G can create realistic image and D can't identify where the image is coming from,which means the generator distribution $p_{g}$ is closed to real data distribution $P_{data}$.The training steps can be see as Fig.\ref{fig:firstpicture1}
+\begin{figure*}[htb]
+\centering
+\includegraphics[width=6.50in,height=1.80in]{9-2.png}
+\caption{Generative adversarial nets are trained by simultaneously updating the discriminative distribution (D, blue, dashed line) so that it discriminates between samples from the data generating distribution (black, dotted line) $p_{data}$ from those of the generative distribution $p_{g}$ (G) (green, solid line).}
+\label{fig:firstpicture1}
+\end{figure*}
+\section{Theoretical Results}
+\subsection{Global Optimality of $p_{g} = p_{data}$}
+Author first consider the optimal discriminator D for any given generator G.
+\begin{equation}
+\begin{aligned}
+V(G,D) &= \mathbb{E}_{x \backsim p_{data}(x)} \left[\log{D(x)} \right]
++ \mathbb{E}_{x \backsim p_{g}(x)}\left[\log{1-D(x)} \right]\\
+&= \int_{x} p_{data}(x)\log{(D(x))} dx + \int_{x} p_{g}(x)log(1-D(x))dx\\
+&= \int_{x} p_{data}(x)\log{(D(x))} + p_{g}(x)log{(1-D(x))} dx
+\end{aligned}
+\end{equation}
+For any $(a,b)\in{\mathbb{R}^{2}}$,the function $f(x) = alog(x)+blog(1-x),0 < x < 1 $,it's maximum is $\frac{a}{a+b}$.\par
+Proof:the f(x) is differentiable function,when $0 < x < 1$,and we know when the derivative function $f^{'}(x) = 0$,the value of f(x) is maxmun. 
+\begin{equation}
+f^{'}(x) = \frac{a}{x}+\frac{-b}{1-x} = 0\\ 
+\end{equation}
+so the answer is $\frac{a}{a+b}$.
+Now we can get the optimal discriminator D is
+\begin{equation}
+D^{*}(x) = \frac{p_{data}(x)}{p_{data}(x)+p_{g}(x)}
+\end{equation}
+and at this time
+\begin{equation}
+\begin{aligned}
+\max_{D}V(G,D) &= V(G,D^{*}) = 
+\mathbb{E}_{x \backsim p_{data}(x)} \left[\log{D^{*}(x)} \right] 
++ \mathbb{E}_{x \backsim p_{g}(x)}\left[\log{(1-D^{*}(x))} \right]\\
+&= \mathbb{E}_{x \backsim p_{data}(x)} \left[\log{ \frac{p_{data}(x)}{p_{data}(x)+p_{g}(x)}} \right] 
++ \mathbb{E}_{x \backsim p_{g}(x)}\left[\log{\frac{p_{g}(x)}{p_{data}(x)+p_{g}(x)}} \right]\\
+&= \dots\\
+&= -\log{4} + KL(p_{data}(x)||\frac{p_{data}(x)+p_{g}(x)}{2})+ KL(p_{g}(x)||\frac{p_{data}(x)+p_{g}(x)}{2})\\
+&= -\log4 + 2JS(p_{data}(x)||p_{g}(x))
+\end{aligned}
+\end{equation}
+Given different G we got different JS distance,and Our purpose is to get the shortest JS distence.So only and only $p_{data} == p_{g}$,the generative model perfectly replicate the data generating process.\par
+In the practice, we update the discriminator by ascending its stochastic gradien and update the generator by descending its stochastic gradient.
+\begin{figure*}[htb]
+\centering
+\includegraphics[width=6.50in,height=4.00in]{9-3.png}
+\caption{The algorithm of minmax game.}
+\label{fig:firstpicture2}
+\end{figure*}
+\section{Theoretical Results}
+
+
+{\small
+\bibliographystyle{ieee}
+\bibliography{DarkChannelPrior}
+}
+
+\end{document}
