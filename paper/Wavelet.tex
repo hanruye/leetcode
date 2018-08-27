@@ -1,0 +1,96 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfigure}
+
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+\cvprfinalcopy
+
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+\ifcvprfinal\pagestyle{empty}\fi
+
+\begin{document}
+\title{Underwater Image Enhancement by Wavelet Based Fusion}
+
+\author{Ruyue Han\\\\ \today}
+
+\maketitle
+%\thispagestyle{empty}
+
+\section{Introduction}
+The image captured in water is hazy due to the several effects of the underwater medium. These effects are governed by the suspended particles that lead to absorption and scattering of light during image formation process.The penetration of the visible spectrum colors depends on the depth of water and their wavelength.Longer wavelengths get absorb in water first while shorter wavelengths can last at a longer distance (see Fig.~\ref{fig:firstpicture}).In most of the images, the forward scattering is responsible for contrast problems.The low contrast limits the visibility in an underwater environment and image formation
+process, the images become darker.\par
+This paper presents a wavelet-based fusion technique to overcome color and contrast issues in underwater images.
+\begin{figure}[htb]
+\centering
+\includegraphics[width=3.30in,height=2.00in]{10-1.png}
+\caption{Absorption coefficient of visible light in water.}
+\label{fig:firstpicture}
+\end{figure}
+\section{Wavelet-Based Fusion}
+Author employ CLAHE~\cite{Fuzzy_2012_1} and histogram stretching techniques for contrast enhancement and color correction.The complete procedure for wavelet based fusion approach is shown in Fig.~\ref{fig:secondpicture}.
+\begin{figure}[htb]
+\centering
+\includegraphics[width=3.30in,height=2.50in]{10-2.png}
+\caption{A wavelet based fusion approach for underwater image enhancement.}
+\label{fig:secondpicture}
+\end{figure}
+\subsection{Color and Contrast Enhancement}
+For color correction, the image is converted from RGB (Red-Green-Blue) to HSV (Hue-Saturation-Value) color space.In HSV color space the histogram of the Value component is stretched over the whole range. This operation improves the brightness of the available colors in the image. Then the Hue and Saturation are concatenated with the corrected value component and hence the image is converted back to the RGB color space.In RGB color space, once again the histogram is
+stretched over the whole range (0 to 255) to achieve the color correction in all three channels. The histogram stretching is based on the mathematical expression given in the Eq. (\ref{eq:equation1})
+\begin{equation}
+P_{out} = (P_{in}-i_{min})(\frac{O_{max}-O_{min}}{i_{max}-i_{min}})+O_{min}
+\label{eq:equation1}
+\end{equation}
+For image contrast,author adopted CLAHE~\cite{Adaptive_1987_2},which is a variant of adaptive histogram equalization (AHE) ~\cite{Image_1974_3}, ~\cite{Image_1977_4}.To reduce the problem that noise overamplification tendency is higher during the contrast enhancement in AHE,author use the contrast limit defined in CLAHE to clip the unnecessary region from the histogram ~\cite{Contrast_1994_5}(see Fig.(\ref{fig:thirdpicture})).
+\begin{figure}[htb]
+\centering
+\includegraphics[width=3.30in,height=1.50in]{10-3.png}
+\caption{Redistribution of histogram in CLAHE.}
+\label{fig:thirdpicture}
+\end{figure}
+
+\subsection{Decomposition, Fusion and Inverse Composition}
+The wavelet based fusion algorithm consists of a sequence of low pass and high pass filter banks that are used to eliminate unwanted low and high frequencies present in the image and to acquire the detail and approximation coefficients separately for making the fusing process convenient~\cite{Digital_2009_6}.
+There are two steps in level one; the first step is achieved by applying the low pass and high pass filters with down-sampling on the rows of the input image $x(r, c)$.In the next step, the columns in the horizontal coefficients are filtered and down-sampled into four subimages: Approximate (LL), Vertical detail (LH),
+Horizontal detail (HL), and the Diagonal detail (HH) as shown in Fig.(~\ref{fig:fourpicture}).
+\begin{figure}[htb]
+\centering
+\includegraphics[width=3.30in,height=1.50in]{10-4.png}
+\caption{Redistribution of histogram in CLAHE.}
+\label{fig:fourpicture}
+\end{figure}
+In author's case both enhanced images:the color corrected and the
+contrast enhanced versions of the input image are decomposed
+into their wavelet coefficients then both decompositions are
+fused by using coefficients of maximum values as shown in Fig.(\ref{fig:fivepicture}).
+\begin{figure}[htb]
+\centering
+\includegraphics[width=3.30in,height=2.50in]{10-5.png}
+\caption{Fusion of one level decomposed wavelet coefficients.}
+\label{fig:fivepicture}
+\end{figure}
+For the inverse composition, the reverse
+process is carried out with the help of up-sampling and filtering
+steps using filter banks to get a synthesized or enhanced image
+y(r, c), see Fig.(~\ref{fig:sixpicture}).
+\begin{figure}[htb]
+\centering
+\includegraphics[width=3.30in,height=1.50in]{10-6.png}
+\caption{One-level-2D wavelet-based inverse composition.}
+\label{fig:sixpicture}
+\end{figure}
+{\small
+\bibliographystyle{ieee}
+\bibliography{Wavelet}
+}
+
+\end{document}
