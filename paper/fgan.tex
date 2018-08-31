@@ -1,0 +1,107 @@
+\documentclass[10pt,letterpaper]{article}
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfigure}
+
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+\cvprfinalcopy
+
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+\ifcvprfinal\pagestyle{empty}\fi
+
+\begin{document}
+\title{\itshape f\upshape -GAN: Training Generative Neural Samplers using Variational Divergence Minimization}
+
+\author{Ruyue Han\\\\ \today}
+
+\maketitle
+%\thispagestyle{empty}
+
+\section{Introduction}
+Probabilistic generative models describe a probability distribution over a given domain $\mathcal{X}$.Given a generative model Q,we are generally interested in
+performing one or multiple of the following operations:\par
+\begin{itemize}
+\item \itshape Sampling.\upshape Produce a sample from Q.
+\item \itshape Estimation.\upshape Given a set of samples $\{x_{1},x_{2},\dots,x_{n}\}$ from an unknown true distribution P , find Q that best describes the true distribution.
+\item \itshape Point-wise likelihood evaluation.\upshape Given a sample x, evaluate the likelihood Q(x).
+\end{itemize}\par
+GANs proposed by~\cite{Generative_2014_1} are an expressive class of generative models that allow exact sampling and approximate estimation.In the original GAN paper the authors show that it is possible to estimate neural samplers by
+approximate minimization of the symmetric Jensen-Shannon divergence,
+\begin{equation}
+D_{JS}(P||Q) = \frac{1}{2}D_{KL}(P||\frac{P+Q}{2})+\frac{1}{2}D_{KL}(Q||\frac{P+Q}{2})
+\end{equation}
+where $D_{KL}$ denotes the Kullback-Leibler divergence.The key technique used in the GAN training is that of introducing a second ``discriminator'' neural networks which is optimized simultaneously.Because $D_{JS}(P||Q)$ is a proper divergence measure between distributions this implies that the true distribution P can be approximated well in case where samples are enough.\par
+In this work author shows that the principle of GANs is more general and extend the variational divergence estimation framework proposed by Nguyen et al.~\cite{Estimating_2010_2} to recover the GAN training objective and generalize it to arbitrary \itshape f-divergences.
+
+\section{Method}
+\subsection{The f-divergence Family}
+\upshape A large class of different divergences are the so called \itshape f \upshape -divergences~\cite{Information_2004_3,divergences_2006_4}.Given two distributions P and Q that possess, respectively, an absolutely continuous density function p and q with respect to a base measure dx defined on the domain $\mathcal{X}$ , the define the \itshape f \upshape -divergence\par
+\begin{equation}
+D_{f}(P||Q) = \int_{\mathcal{X}} q(x)f(\frac{p(x)}{q(x)}) dx
+\label{eq:equation1}
+\end{equation}
+where the generator function f is a convex, lower-semicontinuous function satisfying f (1) = 0.Different choices of f recover popular divergences as special cases in function(\ref{eq:equation1}).Author illustrates common choices in Fig (\ref{fig:firstpicture}).
+\begin{figure}[htb]
+\centering
+\includegraphics[width=5.30in,height=2.00in]{11-1.png}
+\caption{List of f -divergences D f (P kQ) together with generator functions and the optimal variational functions.}
+\label{fig:firstpicture}
+\end{figure}
+
+\subsection{Variational Estimation of f-divergences}
+Every convex, lower-semicontinuous function f has a brother function,\itshape convex conjugate  \upshape function $f^{*}$,also known as Fenchel conjugate ~\cite{Fundamentals_2012_5}.This function is defined as
+\begin{equation}
+f^{*}(t) = \sup_{x\in{dom_{f}}}\{xt-f(x)\}
+\end{equation}
+you can understand this function like this
+\begin{equation}
+f^{*}(t) = \max_{x\in{dom_{f}}}\{xt-f(x)\}
+\end{equation}
+$xt-f(x)$ is a group linear equation,like $at-b,(a,b \in{\mathbb R}$).The function $f^{*}$ is again convex and lower-semicontinuous and $f^{**} = f$ .So function f can be described as
+\begin{equation}
+f(x) = \sup_{t\in{dom_{f^{*}}}}\{tx-f^{*}(t)\}
+\label{eq:equation2}
+\end{equation}
+we use $\frac{p(x)}{q(x)}$ to replace the $x$ in equation (\ref{eq:equation2}),then we can get function (\ref{eq:equation3})
+\begin{equation}
+f(\frac{p(x)}{q(x)}) = \sup_{t\in{dom_{f^{*}}}}\{t\frac{p(x)}{q(x)} - f^{*}(t) \}
+\label{eq:equation3}
+\end{equation}
+and then put function (\ref{eq:equation3}) into function (\ref{eq:equation1}),we get function
+\begin{equation}
+D_{f}(P||Q)=\int_{\mathcal{X}} q(x)\sup_{t\in{dom_{f^{*}}}}\{t\frac{p(x)}{q(x)} - f^{*}(t) \} dx
+\label{eq:equation4}
+\end{equation}
+if we define a funtion D,the input is x and the out put is t,the function is $t=D(x),(x\in{\mathcal{X}})$,this may casuse a question that is the range of t maybe smaller than befor $t \in{dom_{f^{*}}}$.so putting function D into (\ref{eq:equation4}) we get equation(\ref{eq:equation5})
+\begin{equation}
+D_{f}(P||Q) \geqslant \sup_{D}\int_{\mathcal{X}} p(x)D(x) - q(x)f^{*}(D(x)) dx =
+\sup_{D}\{ \mathbb E_{x \backsim P}\left[D(x)\right] - E_{x \backsim Q}\left[f^{*}(D(x))\right]\}
+\label{eq:equation5}
+\end{equation}
+If we choose $f(u) = u\log{u} - (u+1)\log{(u+1)}$,which function is choosed by GAN,and then get f's brother convex conjugate  $f^{*}(t) = -\log{(1-e^{t})}$ from Fig~\ref{fig:secondpicture},repalcing $D(x)$ by $\log(D(x))$.Then we can get 
+\begin{equation}
+D_{f}(P||Q) \geqslant \sup_{D}\int_{\mathcal{X}} p(x)\log(D(x)) + q(x)log(1-D(x)) dx = \sup_{D}\{\underline{\mathbb E_{x \backsim P}\left[D(x)\right] + E_{x \backsim Q}\left[log(1-D(x))\right]}\}
+\end{equation}
+\begin{figure}[htb]
+\centering
+\includegraphics[width=5.30in,height=2.00in]{11-2.png}
+\caption{List of f -divergences D f (P kQ) together with generator functions and the optimal variational functions.}
+\label{fig:secondpicture}
+\end{figure}
+If we define $V(Q,D) = \mathbb E_{x \backsim P}\left[D(x)\right] + E_{x \backsim Q}\left[log(1-D(x))\right]$.we can see this function is the loss function of GAN,and also know why have to minmax function $V(G,D)$.
+
+
+{\small
+\bibliographystyle{ieee}
+\bibliography{fgan}
+}
+
+\end{document}
