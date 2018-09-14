@@ -1,0 +1,75 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+\usepackage{cvpr}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{subfigure}
+
+\usepackage[pagebackref=true,breaklinks=true,letterpaper=true,colorlinks,bookmarks=false]{hyperref}
+
+\cvprfinalcopy
+
+
+\def\cvprPaperID{****} % *** Enter the CVPR Paper ID here
+\def\httilde{\mbox{\tt\raisebox{-.5ex}{\symbol{126}}}}
+
+\ifcvprfinal\pagestyle{empty}\fi
+
+\begin{document}
+\title{Unpaired Image-to-Image Translation using Cycle-Consistent Adversarial Networks}
+
+\author{Ruyue Han\\\\ \today}
+
+\maketitle
+%\thispagestyle{empty}
+
+\section{Introduction}
+In this paper,author presented a new model called cycleGan for learning to translate an image from a source domain X to a target domain Y in the absence of paired examples.Figure.~\ref{fig:CycleGanModel} shows the cycleGan model.CycleGan model contains two mapping functions G:$X\to Y$ and F:$Y\to X$,and associated adversarial discriminators $D_{Y}$ and $D_{X}$ .$D_{Y}$ encourages G to translate X into outputs indistinguishable from domain Y , and vice versa for $D_{X}$ and F. To further regularize the mappings, author introduces two cycle consistency losses that capture the intuition that if we translate from one domain to the other and back again we should arrive at where we started: (b) forward cycle-consistency loss: $x\to G(x) \to F (G(x)) \thickapprox x$, and (c) backward cycle-consistency loss: $y \to F (y) \to G(F (y)) \thickapprox y$.
+\begin{figure*}[htb]
+\centering
+\includegraphics[width=6.50in,height=1.80in]{12-1.png}
+\caption{CycleGan model}
+\label{fig:CycleGanModel}
+\end{figure*}
+
+\section{Formulation}
+\subsection{Adversarial Loss}
+Author apply adversarial losses to both mapping functions. For the mapping function G : $X\to Y$ and its discriminator $D_{Y}$ , expressing the objective as:
+\begin{equation}
+\begin{aligned}
+L_{GAN}(G,D_{Y},X,Y) = \mathbb{E}_{y \backsim p_{data}(y)} \left[\log{D_{Y}(y)}\right] \\
++ \mathbb{E}_{x \backsim p_{data}(x)}\left[\log{(1-D_{Y}(G(x)))} \right]
+\end{aligned}
+\end{equation}
+where G tries to generate images G(x) that look similar to images from domain Y , while D Y aims to distinguish between translated samples G(x) and real samples y. G aims to minimize this objective against an adversary D that tries to maximize it, i.e. $\min_{G}\max_{D_{Y}}L_{GAN}(G,D_{Y},X,Y)$ .There are also a similar adversarial loss for the mapping function F : $Y\to X$ and its discriminator $D_{X}$ as well: i.e.$\min_{F}\max_{D_{X}}L_{GAN}(F,D_{X},X,Y)$.
+
+\subsection{Cycle Consistency Loss}
+Adversarial losses alone cannot guarantee that the learned function can map an individual input $x_{i}$ to a desired output $y_{i}$ . To further reduce the space of possible mapping functions, so author argue that the learned mappingAs shown in Figure.~\ref{fig:CycleGanModel}(b), for each image x from domain X, the image translation cycle should be able to bring x back to the original image,
+i.e., $x\to G(x) \to F (G(x)) \thickapprox x$.They call this \itshape cycle consistency\upshape .Similarly, as illustrated in Figure.~\ref{fig:CycleGanModel}(c), for each image y from domain Y , G and F should also satisfy
+backward cycle consistency: $y \to F (y) \to G(F (y)) \thickapprox y$.Author incentivize this behavior using a cycle consistency loss:
+\begin{equation}
+\begin{aligned}
+L_{cyc}(G,F)=\mathbb{E}_{y \backsim p_{data}(y)} \left[||G(F(y))-y||_{1}\right]\\
++\mathbb{E}_{x \backsim p_{data}(x)} \left[||F(G(x))-x||_{1}\right]
+\end{aligned}
+\end{equation}
+\subsection{Full Objective}
+\begin{equation}
+\begin{aligned}
+L(G,F,D_{X},D_{Y}) = L_{GAN}(G,D_{Y},X,Y)\\+L_{GAN}(F,D_{X},Y,X)\\+\lambda L_{cyc}(G,F)
+\end{aligned}
+\end{equation}
+also aiming to solve:
+\begin{equation}
+\begin{aligned}
+G^{*},F^{*} = arg \min_{G,F}\max_{D_{X},D_{Y}}L(G,F,D_{X},D_{Y})
+\end{aligned}
+\end{equation}
+{\small
+\bibliographystyle{ieee}
+\bibliography{cyclegan}
+}
+
+\end{document}
