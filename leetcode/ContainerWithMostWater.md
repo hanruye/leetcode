@@ -1,10 +1,10 @@
 ### 问题描述：
-***
 给定n个非负整数a1 a2…， an，其中每一个都表示坐标(i, ai)上的一个点。画了n条垂直线，使直线i的两个端点在(i, ai)和(i, 0)处，找出两条直线，与x轴一起形成一个容器，使容器中含有最多的水。
-## 示例图
+##### 示例图
 ![result4](assets/ContainerWithMostWater.jpg)
-### 代码实现：
 ***
+### 代码实现：
+
 ```python
 class Solution(object):
     def maxArea(self, height):
