@@ -21,12 +21,12 @@ import math
 OUT_TYPE = ".tfrecords"
 IMAGE_TYPE = [".jpg", ".png"]
 
-aa = "/media/hry/udata/u_sys_data/code_info/data/datas/bing"
-bb = "/media/hry/udata/candelete_test/bingtest.tfrecords"
+#aa = "/media/hry/udata/u_sys_data/code_info/data/datas/bing"
+#bb = "/media/hry/udata/candelete_test/bingtest.tfrecords"
 
 parse = arg.ArgumentParser()
-parse.add_argument("--input_dir", type=str, default=aa, help="the images path")
-parse.add_argument("--output_dir", type=str, default=bb, help="the images path")
+parse.add_argument("--input_dir", type=str, required=True, help="the images path")
+parse.add_argument("--output_dir", type=str, required=True, help="the images path")
 a = parse.parse_args()
 
 
