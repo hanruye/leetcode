@@ -25,7 +25,8 @@ aa = "/media/hry/udata/candelete_test/anime.tfrecords"
 
 args = arg.ArgumentParser()
 args.add_argument("--input_dir", type=str, default=aa, help="tfRecord file")
-args.add_argument("--epoch", type=int, default=10, help="running epoch")
+args.add_argument("--epoch", type=int, default=100, help="running epoch")
+args.add_argument("--batch_size", type=int, default=10, help="batch_size")
 args.add_argument("--image_height", type=int, default=96, help="image original height or resize height")
 args.add_argument("--image_width", type=int, default=96, help="image original width or resize width")
 args.add_argument("--envir", type=str, default="0", help="gpu number")
@@ -82,7 +83,7 @@ class Reader(object):
 if __name__ == '__main__':
     path = os.path.dirname(aa)
     os.environ["CUDA_VISIBLE_DEVICES"] = a.envir
-    reader1 = Reader(aa, a.image_height, a.image_height, batch_size=10, num_epoch=a.epoch)
+    reader1 = Reader(aa, a.image_height, a.image_height, batch_size=a.batch_size, num_epoch=a.epoch)
     images_batch, name = reader1.read_data()
     with tf.Session() as sess:
 
