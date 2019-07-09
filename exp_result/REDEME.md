@@ -1,4 +1,4 @@
-##Dependencies
+## Dependencies
 * [Python 3.6](https://www.continuum.io/downloads)
 * [PyTorch 0.4.0](http://pytorch.org/)
 * [TensorFlow 1.5+](https://www.tensorflow.org/) (optional for tensorboard)
