@@ -21,13 +21,13 @@ python preprocess.py  --input_left original_data/dataA  \
 
 ```
 
-##Training
+## Training
 ```bash
 python main.py  --mode train  --batch_size 8  --data_dir training_data
 
 ```
 
-##Testing
+## Testing
 ```bash
 python main.py  --mode test  --data_dir testing_data  --test_epoch 50
 ```
